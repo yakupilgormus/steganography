@@ -86,3 +86,22 @@ def anahtari_sarla(anahtar: bytes, parola: str, ipucu: str = "") -> AnahtarZarf:
     kaplama_anahtari = turetilmis_kaplama_anahtari(parola, tuz)
     sarilmis = AESGCM(kaplama_anahtari).encrypt(nonce, anahtar, b"güvenlik-kasa-anahatar-zarf-v1")
     return AnahtarZarf(tuz=tuz, nonce=nonce, sarilmis=sarilmis, ipucu=ipucu)
+
+def zarftan_cikar_zarf(zarf: AnahtarZarf, parola: str) -> bytes:
+    kaplama_anahtari = turetilmis_kaplama_anahtari(parola, zarf.tuz)
+    try:
+        return AESGCM(kaplama_anahtari).decrypt(zarf.nonce, zarf.sarilmis, b"güvenlik-kasa-anahatar-zarf-v1")
+    except InvalidTag as exc:
+        raise DesifrelemeHatasi("yanlış parola veya bozuk anahtar zarfı") from exc
+
+def dilim_nonce(temel_nonce: bytes, indeks: int) -> bytes:
+    """
+    rastgele dosya nonce'ından türetilen belirlenmeli dilim başına nonce
+
+    temel_nonce 8 rastgele bayt 4-byte büyük-biti sonlu sayaç ekliyoruz
+    dosya başına taze rastgele temele sahip olmak dosyalar arasında çakışmaları ihmal edilebilir kılar
+    ve dosya içinde her dilime benzersiz bir nonce verilir
+    """
+    if indeks >= 2**32:
+        raise ValueError("bu nonce şeması için dosya çok büyük")
+    return temel_nonce + struct.pack(">I", indeks)
