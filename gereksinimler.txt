@@ -1,0 +1,7 @@
+cryptography 42.0: modern kriptografi kütüphanesi
+argon2-cffi 23.1: parola üretme aracı
+click 8.1: cli arayüzü oluşturucu
+fastapi 0.110: tarayıcı arayüzü için gerekli kütüphane
+uvicorn 0.29: fastapi http arayüzü olarak çalışsın diye gerekli kütüphane
+python-multipart 0.0.9: multipart form verisi ayrıştırıcısı
+pytest: test çerçevesi
