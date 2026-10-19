@@ -36,3 +36,23 @@ def turetilmis_kaplama_anahtari(parola: str, tuz: bytes) -> bytes:
         hash_len=ANAHTAR_BUYUKLUK,
         type=Type.ID,
     )
+
+@dataclass(frozen=True)
+class AnahtarZarf:
+    """parola ile korunan bir aes anahtarı, taşıyabilir medyada saklanmaya uygundur"""
+    tuz: bytes
+    nonce: bytes
+    sarilmis: bytes
+    ipucu: str = ""
+
+    def byteye_cevir(self) -> bytes:
+        h = self.ipucu.encode("utf-8")[:255]
+        return (
+            b"SVE1"
+            + struct.pack(">B", len(h))
+            + h
+            + self.tuz
+            + self.nonce
+            + struct.pack(">H", len(self.sarilmis))
+            + self.sarilmis
+        )
