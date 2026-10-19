@@ -76,3 +76,13 @@ class AnahtarZarf:
         if len(sarilmis) != sarilma_uzunlugu:
             raise ValueError("yarım kalmış zarf")
         return cls(tuz=tuz, nonce=nonce, sarilmis=sarilmis, ipucu=ipucu)
+
+def anahtari_sarla(anahtar: bytes, parola: str, ipucu: str = "") -> AnahtarZarf:
+    """taşıma aka. depolama için bir parolanın altındaki ham anahtarı şifreleme"""
+    if len(anahtar) != ANAHTAR_BUYUKLUK:
+        raise ValueError("anahtar 32 byte olmalıdır")
+    tuz = os.urandom(TUZ_BOYUTU)
+    nonce = os.urandom(NONCE_BOYUTU)
+    kaplama_anahtari = turetilmis_kaplama_anahtari(parola, tuz)
+    sarilmis = AESGCM(kaplama_anahtari).encrypt(nonce, anahtar, b"güvenlik-kasa-anahatar-zarf-v1")
+    return AnahtarZarf(tuz=tuz, nonce=nonce, sarilmis=sarilmis, ipucu=ipucu)
