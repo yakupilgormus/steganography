@@ -23,3 +23,16 @@ class DesifrelemeHatasi(Exception):
 def anahtar_olustur() -> bytes:
     """kriptografik rastgele aes256 anahtarı"""
     return AESGCM.generate_key(bit_length=256)
+
+def turetilmis_kaplama_anahtari(parola: str, tuz: bytes) -> bytes:
+    if len(tuz) != TUZ_BOYUTU:
+        raise ValueError("kötü tuz uzunluğu")
+    return hash_secret_raw(
+        secret=parola.encode("utf-8"),
+        salt=tuz,
+        time_cost=ARGON2_ZAMAN_MALIET,
+        memory_cost=ARGON2_HAFIZA_KIB,
+        parallelism=ARGON2_PARALELLIK,
+        hash_len=ANAHTAR_BUYUKLUK,
+        type=Type.ID,
+    )
