@@ -17,3 +17,9 @@ ARGON2_ZAMAN_MALIET = 3
 ARGON2_HAFIZA_KIB = 262_144
 ARGON2_PARALELLIK = 4
 
+class DesifrelemeHatasi(Exception):
+    """kimlik doğrulama başarısız olduğunda önemsenmez yanlış anahtar veya bozulmuş veri olarak görülür"""
+
+def anahtar_olustur() -> bytes:
+    """kriptografik rastgele aes256 anahtarı"""
+    return AESGCM.generate_key(bit_length=256)
