@@ -56,3 +56,23 @@ class AnahtarZarf:
             + struct.pack(">H", len(self.sarilmis))
             + self.sarilmis
         )
+
+    @classmethod
+    def bayttan(cls, blob: bytes) -> "AnahtarZarf":
+        if not blob.startswith(b"SVE1"):
+            raise ValueError("güvenli kasadan olmayan anahtar zarfı")
+        off = 4
+        ipucu_len = blob[off]
+        off += 1
+        ipucu = blob[off:off + ipucu_len].decode("utf-8")
+        off += ipucu_len
+        tuz = blob[off:off + TUZ_BOYUTU]
+        off += TUZ_BOYUTU
+        nonce = blob[off:off + NONCE_BOYUTU]
+        off += NONCE_BOYUTU
+        (sarilma_uzunlugu,) = struct.unpack(">H", blob[off:off + 2])
+        off += 2
+        sarilmis = blob[off:off + sarilma_uzunlugu]
+        if len(sarilmis) != sarilma_uzunlugu:
+            raise ValueError("yarım kalmış zarf")
+        return cls(tuz=tuz, nonce=nonce, sarilmis=sarilmis, ipucu=ipucu)
