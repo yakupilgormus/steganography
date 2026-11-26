@@ -3,7 +3,7 @@
   <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/yakupilgormus/steganography">
   <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/yakupilgormus/steganography">
   <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/yakupilgormus/steganography">
-  <img alt="https://github.com/yakupilgormus/steganography/.github/workflows/ci.yml/badge.svg">
+  <img src="https://github.com/yakupilgormus/steganography/actions/workflows/ci.yml/badge.svg" alt="CI status">
 </div>
 
 # steganography
